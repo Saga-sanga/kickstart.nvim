@@ -175,6 +175,12 @@ vim.opt.scrolloff = 10
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
+-- Move lines up and down in normal mode and visual mode
+vim.keymap.set('n', '<A-k>', ':m-2<CR>', { noremap = true, silent = true })
+vim.keymap.set('v', '<A-k>', ":m '<-2<CR>gv=gv", { noremap = true, silent = true })
+vim.keymap.set('n', '<A-j>', ':m+1<CR>', { noremap = true, silent = true })
+vim.keymap.set('v', '<A-j>', ":m '>+1<CR>gv=gv", { noremap = true, silent = true })
+
 -- [[ Neotree keymaps ]]
 vim.keymap.set('n', '<leader>e', '<Cmd>Neotree toggle<CR>')
 
