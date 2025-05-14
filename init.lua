@@ -91,7 +91,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
-vim.bo.softtabstop = 2
+vim.opt.softtabstop = 2
 vim.opt.termguicolors = true
 
 --
@@ -157,7 +157,7 @@ vim.opt.splitbelow = true
 --  See `:help 'list'`
 --  and `:help 'listchars'`
 vim.opt.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = { tab = '  ', trail = '·', nbsp = '␣' }
 
 -- Preview substitutions live, as you type!
 vim.opt.inccommand = 'split'
@@ -231,6 +231,26 @@ vim.api.nvim_create_autocmd('TextYankPost', {
     vim.highlight.on_yank()
   end,
 })
+
+-- Filetype-specific tab settings
+vim.api.nvim_create_augroup('SetTabWidth', { clear = true })
+
+local set_tab = function(filetype, tabstop, shiftwidth, expandtab)
+  vim.api.nvim_create_autocmd('Filetype', {
+    group = 'SetTabWidth',
+    pattern = filetype,
+    callback = function()
+      vim.opt_local.tabstop = tabstop
+      vim.opt_local.shiftwidth = shiftwidth
+      vim.opt_local.expandtab = expandtab
+    end,
+  })
+end
+
+set_tab('python', 4, 4, true)
+set_tab('javascript', 2, 2, true)
+set_tab('go', 4, 4, false)
+set_tab('html', 2, 2, true)
 
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
@@ -716,16 +736,20 @@ require('lazy').setup({
         'prettierd',
         'markdownlint',
       })
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      require('mason-tool-installer').setup {
+        ensure_installed = ensure_installed,
+        run_on_start = true,
+      }
 
       require('mason-lspconfig').setup {
+        -- automaitic_installation = true,
         handlers = {
           function(server_name)
             local server = servers[server_name] or {}
             -- This handles overriding only values explicitly passed
             -- by the server configuration above. Useful when disabling
             -- certain features of an LSP (for example, turning off formatting for ts_ls)
-            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
+            server.capabilities = vim.tbl_deep_extend('force', {}, capabilities or {}, server.capabilities or {})
             require('lspconfig')[server_name].setup(server)
           end,
         },
