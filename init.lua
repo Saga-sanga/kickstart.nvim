@@ -121,6 +121,12 @@ end)
 -- Enable break indent
 vim.o.breakindent = true
 
+-- Set default indentation to 2 spaces
+vim.opt.tabstop = 2
+vim.opt.shiftwidth = 2
+vim.opt.expandtab = true
+vim.opt.softtabstop = 2
+
 -- Save undo history
 vim.o.undofile = true
 
@@ -219,15 +225,13 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   end,
 })
 
+-- Force Go to use tabs (standard)
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'json', 'jsonc' },
+  pattern = 'go',
   callback = function()
-    vim.schedule(function()
-      vim.bo.tabstop = 2
-      vim.bo.shiftwidth = 2
-      vim.bo.softtabstop = 2
-      vim.bo.expandtab = true
-    end)
+    vim.opt_local.expandtab = false
+    vim.opt_local.tabstop = 4
+    vim.opt_local.shiftwidth = 4
   end,
 })
 
@@ -261,12 +265,7 @@ require('lazy').setup({
   -- NOTE: Plugins can be added with a link (or for a github repo: 'owner/repo' link).
   {
     'NMAC427/guess-indent.nvim', -- Detect tabstop and shiftwidth automatically
-    opts = {
-      filetype_exclude = {
-        'json',
-        'jsonc',
-      },
-    },
+    opts = {},
   },
   -- NOTE: Plugins can also be added by using a table,
   -- with the first argument being the link and the following
