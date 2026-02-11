@@ -232,6 +232,7 @@ vim.api.nvim_create_autocmd('FileType', {
     vim.opt_local.expandtab = false
     vim.opt_local.tabstop = 4
     vim.opt_local.shiftwidth = 4
+    vim.opt_local.softtabstop = 0
   end,
 })
 
@@ -857,6 +858,7 @@ require('lazy').setup({
         typescriptreact = { 'prettierd', 'prettier', stop_after_first = true },
         json = { 'prettierd', 'prettier', stop_after_first = true },
         jsonc = { 'prettierd', 'prettier', stop_after_first = true },
+        go = { 'goimports' },
       },
     },
   },
